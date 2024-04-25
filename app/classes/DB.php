@@ -9,10 +9,10 @@ class DB
     private $db;
     private $db_user;
     private $db_pass;
-    
+
     protected $fillable = [];
     protected $values = [];
-    
+
     protected $table;
     public $cone;
     public $j = "";
@@ -101,8 +101,11 @@ class DB
 
     public function get()
     {
-        $sql = "SELECT" . $this->s . " FROM " . str_replace(
-            "app\\models\\","",get_class($this)) .
+        $sql = "SELECT " . $this->s . " FROM " . str_replace(
+            "app\\models\\",
+            "",
+            get_class($this)
+        ) .
             ($this->j != "" ? " a " . $this->j : "") .
             " WHERE" .
             $this->w .
@@ -110,7 +113,7 @@ class DB
             $this->l;
 
         $r = $this->table->query($sql);
-
+        $result = [];
         while ($f = mysqli_fetch_assoc($r)) {
             $result[] = $f;
         }
@@ -118,16 +121,19 @@ class DB
         return json_encode($result);
     }
 
- public function create()
+    public function create()
     {
         $sql = "INSERT INTO " . str_replace(
-            "app\\models\\","",get_class($this)) . " 
+            "app\\models\\",
+            "",
+            get_class($this)
+        ) . " 
             (" . implode(",", $this->fillable) . ') 
             values 
-            (' . trim(str_replace("&", "?,", str_pad("",count($this->values), "&")), ",") . ');';
-            $stmt = $this->table->prepare($sql);
-            $stmt->bind_param(str_pad("",count($this->values), "s"), ...$this->values);
-            $stmt->execute();
-            return $stmt->insert_id;
+            (' . trim(str_replace("&", "?,", str_pad("", count($this->values), "&")), ",") . ');';
+        $stmt = $this->table->prepare($sql);
+        $stmt->bind_param(str_pad("", count($this->values), "s"), ...$this->values);
+        $stmt->execute();
+        return $stmt->insert_id;
     }
 }

@@ -2,7 +2,8 @@ const app = {
   routes: {
     home: "/home",
     inisession: "/Session/iniSession",
-    register: "Register/register",
+    login: "/Session/userAuth",
+    register: "/Register/register",
 
     prevposts: "/Posts/getPosts",
   },
@@ -15,9 +16,9 @@ const app = {
     let html = "<b>Aún no hay publicaciones en este foro</b>";
     this.pp.html("");
     fetch(this.routes.prevposts)
-      .then((res => res.json()))
+      .then((res) => res.json())
       .then((posts) => {
-        html = ''
+        html = "";
         for (let post of posts) {
           html += `
                     <button onclick="app.openPost(event,${post.id}. this)"
@@ -35,7 +36,8 @@ const app = {
                 `;
         }
         this.pp.html(html);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         console.error("Error", err);
       });
   },

@@ -12,10 +12,10 @@ setHeader($d);
             <hr>
             <form action="" id="login-form">
                 <div class="form-group input-group">
-                    <label for="username" class="input-group-text">
+                    <label for="name" class="input-group-text">
                         <i class="bi bi-person"></i>
                     </label>
-                    <input type="text" name="username" id="username" class="form-control" required>
+                    <input type="text" name="name" id="name" class="form-control" required>
                 </div>
                 <div class="form-group input-group mt-3">
                     <label for="passwd" class="input-group-text">
@@ -46,3 +46,24 @@ setFooter($d);
 ?>
 
 <script src=""></script>
+<SCript>
+    $(function(){
+        const loginForm = $("#login-form")
+        loginForm.on("submit", function(e){
+            e.preventDefault()
+            e.stopPropagation()
+            const data = new FormData(this)
+            fetch(app.routes.login, {
+                method: "POST",
+                body: data
+            }).then(res => res.json())
+            .then(res => {
+                if (res.r){
+                    location.href = "/"
+                } else{
+                    $("#error").removeClass("d-none")
+                }
+            })
+        })
+    })
+</SCript>

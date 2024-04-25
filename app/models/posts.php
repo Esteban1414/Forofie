@@ -4,26 +4,27 @@ namespace app\models;
 
 class posts extends Model
 {
-
+    protected $fillable = [
+        'userId',
+        'title',
+        'body'
+    ];
+    protected $values = [];
+    
 
     public function __construct()
     {
         parent::__construct();
         $this->table = $this->connect();
-        $this->fillable = [
-            'userId',
-            'title',
-            'body'
-        ];
     }
 
     public function getAllPosts($limit = 5)
     {
         // $result = $this->all()->get();
-        $result = $this->select([' a.title', 'date_format(a.created_at,"%d/%m/%Y") as fecha', 'b.name'])
+        $result = $this->select(['a.title', 'date_format(a.created_at,"%d/%m/%Y") as fecha', 'b.name'])
             ->join('user b', 'a.userId=b.id')
             ->where([['active', 1]])
-            ->orderBy([['created_at', 'DESC']])
+            ->orderBy([['a.created_at', 'DESC']])
             ->limit($limit)
             ->get();
         return $result;
