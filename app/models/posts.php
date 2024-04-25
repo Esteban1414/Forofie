@@ -4,17 +4,17 @@ namespace app\models;
 
 class posts extends Model
 {
-    protected $fillable = [
-        'userId',
-        'title',
-        'body'
-    ];
-    public $values = [];
+
 
     public function __construct()
     {
         parent::__construct();
         $this->table = $this->connect();
+        $this->fillable = [
+            'userId',
+            'title',
+            'body'
+        ];
     }
 
     public function getAllPosts($limit = 5)

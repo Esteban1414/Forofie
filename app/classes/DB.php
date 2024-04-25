@@ -9,7 +9,10 @@ class DB
     private $db;
     private $db_user;
     private $db_pass;
-
+    
+    protected $fillable = [];
+    protected $values = [];
+    
     protected $table;
     public $cone;
     public $j = "";
@@ -113,5 +116,18 @@ class DB
         }
 
         return json_encode($result);
+    }
+
+ public function create()
+    {
+        $sql = "INSERT INTO " . str_replace(
+            "app\\models\\","",get_class($this)) . " 
+            (" . implode(",", $this->fillable) . ') 
+            values 
+            (' . trim(str_replace("&", "?,", str_pad("",count($this->values), "&")), ",") . ');';
+            $stmt = $this->table->prepare($sql);
+            $stmt->bind_param(str_pad("",count($this->values), "s"), ...$this->values);
+            $stmt->execute();
+            return $stmt->insert_id;
     }
 }
