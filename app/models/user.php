@@ -2,20 +2,17 @@
 
 namespace app\models;
 class user extends Model
-{
-       
-    protected $fillable = [
-        'name',
-        'email',
-        'passwd'
-    ];
-    protected $values = [];
-    
+{    
 
     public function __construct()
     {
         parent::__construct();
         $this->table = $this->connect();
+        $this->fillable = [
+            'name',
+            'email',
+            'passwd'
+        ];
     }
 
     public function registerUser($data)

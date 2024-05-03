@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="col-8">
-        <div id="content" class="content">
+        <div id="last-posts" class="content">
             <!-- Última publicación/publicacion seleccionada -->
         </div>
     </div>
@@ -33,7 +33,7 @@
     <script>
         $(function(){
             app.previousPosts();
-            //app.lastPost();
+            app.lastPost();
         });
     </script>
 

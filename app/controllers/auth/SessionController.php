@@ -5,7 +5,7 @@ namespace app\controllers\auth;
 use app\controllers\Controller;
 use app\classes\View;
 use app\models\user;
-
+use app\classes\Redirect;
 class SessionController extends Controller
 {
     public function __construct()
@@ -16,6 +16,7 @@ class SessionController extends Controller
     public function iniSession($params = null)
     {
         $response = [
+            'ua' => self::sessionValidate() ?? ['sv' => false],
             'title' => "Iniciar Sessión",
             'code' => 200
         ];
@@ -46,6 +47,7 @@ class SessionController extends Controller
         $_SESSION['name'] = $data[0]->name;
         $_SESSION['passwd'] = $data[0]->passwd;
         $_SESSION['tipo'] = $data[0]->tipo;
+        $_SESSION['activo'] = $data[0]->activo;
         session_write_close();
         return json_encode(["r" => true]);
     }
@@ -85,7 +87,7 @@ class SessionController extends Controller
 
     public function logout(){
         $this->sessionDestroy();
-        //Redirect::to('Home);
+        Redirect::to('Home');
         exit();
     }
 }

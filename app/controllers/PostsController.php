@@ -18,4 +18,9 @@ class PostsController extends Controller
         $result = $posts->getAllPosts();
         echo $result;
     }
+    public function getLastPost(){
+        $posts = new posts();
+        $result = $posts->lastPost();
+        echo $result;
+    }
 }

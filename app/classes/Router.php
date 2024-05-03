@@ -9,6 +9,7 @@ use app\controllers\PostsController as Posts;
 use app\controllers\ErrorController as Error;
 use app\controllers\auth\SessionController as Session;
 use app\controllers\auth\RegisterController as Register;
+use app\controllers\UserpostsController as UserPosts;
 
 class Router
 {
@@ -35,6 +36,9 @@ class Router
                 break;
             case 'RegisterController':
                 $controller = new Register();
+                break;
+            case 'UserpostsController':
+                $controller = new UserPosts();
                 break;
             default:
                 $controller = new Error();

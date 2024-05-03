@@ -1,8 +1,8 @@
 <?php
 function setHeader($args)
 {
-    //$ua = as_object($args->ua);
-    $ua = as_object([]);
+    $ua = as_object($args->ua);
+    // $ua = as_object([]);
 
 ?>
     <!DOCTYPE html>
@@ -66,7 +66,7 @@ function setHeader($args)
 
                                 <li class="nav-item dropdown me-5">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <?= isset($ua->username) ? $ua->username : '' ?>
+                                        <?= isset($ua->name) ? $ua->name : '' ?>
                                     </a>
                                     <ul class="dropdown-menu">
 
