@@ -16,6 +16,7 @@ class DB
     protected $table;
     public $cone;
     public $j = "";
+    public $c = "";
     public $s = " * ";
     public $w = " 1 ";
     public $o = "";
@@ -50,7 +51,6 @@ class DB
 
     public function join($join = "", $on = "")
     {
-        $this->j = "";
         if ($join != "" && $on != "") {
             $this->j .= ' join ' . $join . ' on ' . $on;
         }
@@ -93,6 +93,11 @@ class DB
         return $this;
     }
 
+    public function count($co = "")
+    {
+        $this->c = ",count(" . $co . ") as tt ";
+        return $this;
+    }
 
     public function all()
     {
@@ -108,6 +113,7 @@ class DB
         ) .
             ($this->j != "" ? " a " . $this->j : "") .
             " WHERE" .
+            $this->c .
             $this->w .
             $this->o .
             $this->l;
@@ -135,5 +141,39 @@ class DB
         $stmt->bind_param(str_pad("", count($this->values), "s"), ...$this->values);
         $stmt->execute();
         return $stmt->insert_id;
+    }
+
+    public function update()
+    {
+            $setClause = '';
+            foreach ($this->values as $column => $value) {
+                $setClause .= $column . '=?, ';
+            }
+            $setClause = rtrim($setClause, ', ');
+
+            $sql = "UPDATE " . str_replace("app\\models\\", "", get_class($this)) .
+                " SET $setClause WHERE " .
+                $this->w;
+
+            $stmt = $this->table->prepare($sql);
+
+            $i = 1;
+            foreach ($this->values as $value) {
+                $stmt->bindValue($i++, $value);
+            }
+
+            $res = $stmt->execute();
+            return $res;
+    }
+
+    public function updateOrCreate($new = false)
+    {
+        $self = new self;
+        
+        if (!$new) {
+            $self->update();
+        } else {
+            $self->create();
+        }
     }
 }

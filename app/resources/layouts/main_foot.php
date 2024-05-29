@@ -13,10 +13,10 @@
     <?php } ?>
     <script>
         $(function() {
-            app.user.sv = <?= $ua->sv ? 'true' : 'false' ?>
-            app.user.id = <?= $ua->id ?? '' ?>
-            app.user.name = <?= $ua->name ?? '' ?>
-            app.user.tipo = <?= $ua->tipo ?? '' ?>
+            app.user.sv = <?= $ua->sv ? 'true' : 'false' ?>;
+            app.user.id = <?= $ua->id ?? '""' ?>;
+            app.user.name = "<?= $ua->name ?? '' ?>";
+            app.user.tipo = "<?= $ua->tipo ?? '' ?>";
         });
     </script>
 

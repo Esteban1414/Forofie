@@ -19,16 +19,6 @@ class posts extends Model
     public function getAllPosts($limit = 5)
     {
         // $result = $this->all()->get();
-        $result = $this->select(['a.title', 'date_format(a.created_at,"%d/%m/%Y") as fecha', 'b.name'])
-            ->join('user b', 'a.userId=b.id')
-            ->where([['a.active', 1]])
-            ->orderBy([['a.created_at', 'DESC']])
-            ->limit($limit)
-            ->get();
-        return $result;
-    }
-
-    public function lastPost($limit = 1){
         $result = $this->select(['a.id, a.title', 'date_format(a.created_at,"%d/%m/%Y") as fecha', 'b.name'])
             ->join('user b', 'a.userId=b.id')
             ->where([['a.active', 1]])
@@ -37,4 +27,35 @@ class posts extends Model
             ->get();
         return $result;
     }
+
+    public function lastPost($limit = 1)
+    {
+        $result = $this->select(['a.id, a.title', 'date_format(a.created_at,"%d/%m/%Y") as fecha','a.body', 'b.name'])
+            ->join('user b', 'a.userId=b.id')
+            ->where([['a.active', 1]])
+            ->orderBy([['a.created_at', 'DESC']])
+            ->limit($limit)
+            ->get();
+        return $result;
+    }
+
+    public function getUserPosts($params)
+    {
+        $idUser = $params[2];
+        $result = $this->select(['id, title', 'active', 'date_format(created_at,"%d/%m/%Y") as fecha'])
+        ->where([['userId', $idUser]])
+        ->orderBy([['created_at', 'DESC']])
+        ->get();
+        return $result;
+    }
+
+    public function saveNewPost($data){
+        $this->values = [
+            $data['userId'],
+            $data['title'],
+            $data['body']
+        ];
+        return $this->create();
+    }
+    
 }
