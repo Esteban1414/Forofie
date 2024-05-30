@@ -185,18 +185,15 @@ class DB
 
     public function updateOrCreate(array $attributes, array $values = [])
     {
-        // Adaptar los atributos para que sean compatibles con el método where
-        $whereConditions = [];
+        $where = [];
         foreach ($attributes as $key => $value) {
-            $whereConditions[] = [$key, $value];
+            $where[] = [$key, $value];
         }
-        $this->where($whereConditions);
+        $this->where($where);
     
-        // Verificar si existe un registro que coincida con los atributos dados
-        $existingRecord = json_decode($this->get(), true);
+        $exists = json_decode($this->get(), true);
     
-        // Si existe, actualizar el registro
-        if (count($existingRecord) > 0) {
+        if (count($exists) > 0) {
             $sets = [];
             foreach ($values as $key => $value) {
                 $sets[] = [$key, $value];
@@ -204,7 +201,6 @@ class DB
             return $this->update($sets);
         }
     
-        // Si no existe, crear un nuevo registro
         $this->fillable = array_merge(array_keys($attributes), array_keys($values));
         $this->values = array_merge(array_values($attributes), array_values($values));
         return $this->create();
