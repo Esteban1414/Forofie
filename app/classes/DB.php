@@ -106,14 +106,13 @@ class DB
 
     public function get()
     {
-        $sql = "SELECT " . $this->s . " FROM " . str_replace(
+        $sql = "SELECT " . $this->s . $this->c . " FROM " . str_replace(
             "app\\models\\",
             "",
             get_class($this)
         ) .
             ($this->j != "" ? " a " . $this->j : "") .
             " WHERE" .
-            $this->c .
             $this->w .
             $this->o .
             $this->l;
@@ -165,15 +164,12 @@ class DB
             $res = $stmt->execute();
             return $res;
     }
-
-    public function updateOrCreate($new = false)
-    {
-        $self = new self;
+    public function delete(){
+        $sql = 'delete  from ' . str_replace("app\\models\\","",get_class($this)) . 
+                " where " . $this->w;
         
-        if (!$new) {
-            $self->update();
-        } else {
-            $self->create();
-        }
+        return $this->table->query($sql);
+
     }
+
 }

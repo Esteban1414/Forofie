@@ -58,4 +58,19 @@ class posts extends Model
         return $this->create();
     }
     
+    public function openPost($id)
+    {
+        //print_r($id);
+        $result = $this->select(['a.id', 'a.title', 'a.body', 'date_format(a.created_at,"%d/%m/%Y") as fecha', 'b.name'])
+            ->join('user b', 'a.userId=b.id')
+            ->where([['a.active', 1], ['a.id', $id]])
+            ->get();
+        return $result;
+    }
+    public function deletePost($id)
+    {
+        $result = $this->where([['id', $id]])
+            ->delete();
+        return $result;
+    }
 }

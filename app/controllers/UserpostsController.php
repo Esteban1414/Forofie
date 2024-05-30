@@ -58,5 +58,11 @@ class UserpostsController extends Controller
         $post->saveNewPost($data);
         Redirect::to('home');
     }
+    public function deletePost($params){
+        //print_r($params);die();
+        $post = new posts();
+        echo json_encode( ['r' => $post->deletePost($params[2])] );
+        //$this->getMyPosts([ 2 => $params['userId'] ]);
+    }
 
 }

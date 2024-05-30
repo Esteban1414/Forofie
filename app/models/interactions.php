@@ -1,25 +1,31 @@
-<?php
+<?php 
+    namespace app\models;
 
-namespace app\models;
+    class interactions extends Model{
 
-class interactions extends Model
-{
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->table = $this->connect();
-        $this->fillable = [
+        protected $table;
+        protected $fillable = [
             'userId',
             'postId',
-            'tipo'
+            'tipo',
         ];
+        public $values = [];
+
+        public function __construct(){      
+            parent::__construct();     
+            $this->table = $this->connect();                    
+        }
+
+        public function toggleLike($pid,$uid,$t=1){            
+            $result = $this -> count('postId')
+                            -> where([['userId',$uid],['postId',$pid]])        
+                            -> get();            
+            if(json_decode($result)[0]->tt == 0){
+                $this -> values = [$uid,$pid,$t];
+                $this -> create();                
+            }else{
+                $this -> where([['userId',$uid],['postId',$pid]]) -> delete();                
+            }
+            return;
+        }
     }
-
-    public function toggleLike($params){
-        $postId = $params[2];
-        $userId = $params[3];
-
-    }
-
-}
