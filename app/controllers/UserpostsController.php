@@ -39,23 +39,25 @@ class UserpostsController extends Controller
 
         $Csrf = new Csrf;
         $ua = session::sessionValidate() ?? ['sv' => 0];
-        View::render('newposts', ['ua' => $ua, 'csrf' => $Csrf->get_token()]);
+        View::render('newposts', ['ua' => $ua]);
     }
 
     public function saveNewPost(){
         $post = new posts;
         $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
-        if(!isset($data['csrf_token']) || !Csrf::validate($data['csrf_token'])){
-            $session = new session();
-            $session->logout();
-            return;
-        }
+
         if(!isset($data['title']) || !isset($data['body'])){
             echo json_encode(['r' => false, 'code' => 1]); /* 1 = datos incompletos */
         }
-
         $data['userId'] = session::sessionValidate()['id'];
-        $post->saveNewPost($data);
+        $cond = [
+            'title' => $data['title']
+        ];
+        $val = [
+            'userId' => $data['userId'],
+            'body' => $data['body']     
+           ];
+        $post->saveOrUpdatePost($cond, $val);
         Redirect::to('home');
     }
     public function deletePost($params){

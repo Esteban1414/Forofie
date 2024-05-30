@@ -17,7 +17,6 @@ setHeader($d);
         <textarea class="form-control" cols="30" rows="10" name="body" id="body"></textarea>
     </div>
     <div class="mt-2 text-end">
-        <input type="hidden" name="csrf_token" value="<?= $d->csrf ?>">
         <button type="submit" class="btn btn-primary">Guardar</button>
         <a href="/userposts" class="btn btn-secondary float-end">Cancelar</a>
     </div>

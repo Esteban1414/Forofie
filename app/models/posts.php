@@ -73,4 +73,9 @@ class posts extends Model
             ->delete();
         return $result;
     }
+
+    public function saveOrUpdatePost($attributes, $values)
+    {
+        return $this->updateOrCreate($attributes, $values);
+    }
 }

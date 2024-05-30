@@ -142,28 +142,39 @@ class DB
         return $stmt->insert_id;
     }
 
-    public function update()
+    public function update($sets)
     {
-            $setClause = '';
-            foreach ($this->values as $column => $value) {
-                $setClause .= $column . '=?, ';
-            }
-            $setClause = rtrim($setClause, ', ');
-
-            $sql = "UPDATE " . str_replace("app\\models\\", "", get_class($this)) .
-                " SET $setClause WHERE " .
-                $this->w;
-
-            $stmt = $this->table->prepare($sql);
-
-            $i = 1;
-            foreach ($this->values as $value) {
-                $stmt->bindValue($i++, $value);
-            }
-
-            $res = $stmt->execute();
-            return $res;
+        $set = [];
+        $this->values = []; // Reiniciar valores para asegurar consistencia
+        foreach ($sets as $s) {
+            $set[] = $s[0] . " = ?";
+            $this->values[] = $s[1];
+        }
+        
+        // Contar el número de campos actualizables
+        $numValues = count($this->values);
+        
+        // Crear la cadena de tipos para bind_param (todos los tipos son 's' en este caso)
+        $typeStr = str_repeat('s', $numValues);
+    
+        // Construir la consulta SQL
+        $sql = 'UPDATE ' . str_replace("app\\models\\", "", get_class($this)) . 
+               ' SET ' . implode(", ", $set) . 
+               ' WHERE ' . $this->w;
+        
+        // Preparar y ejecutar la declaración
+        $stmt = $this->table->prepare($sql);
+        
+        // Verificar si el número de elementos en typeStr coincide con el número de values
+        if ($stmt === false || $numValues !== strlen($typeStr)) {
+            throw new \Exception('Error en la preparación del statement o desajuste en el número de parámetros.');
+        }
+        
+        $stmt->bind_param($typeStr, ...$this->values);
+        return $stmt->execute();            
     }
+    
+
     public function delete(){
         $sql = 'delete  from ' . str_replace("app\\models\\","",get_class($this)) . 
                 " where " . $this->w;
@@ -172,4 +183,31 @@ class DB
 
     }
 
+    public function updateOrCreate(array $attributes, array $values = [])
+    {
+        // Adaptar los atributos para que sean compatibles con el método where
+        $whereConditions = [];
+        foreach ($attributes as $key => $value) {
+            $whereConditions[] = [$key, $value];
+        }
+        $this->where($whereConditions);
+    
+        // Verificar si existe un registro que coincida con los atributos dados
+        $existingRecord = json_decode($this->get(), true);
+    
+        // Si existe, actualizar el registro
+        if (count($existingRecord) > 0) {
+            $sets = [];
+            foreach ($values as $key => $value) {
+                $sets[] = [$key, $value];
+            }
+            return $this->update($sets);
+        }
+    
+        // Si no existe, crear un nuevo registro
+        $this->fillable = array_merge(array_keys($attributes), array_keys($values));
+        $this->values = array_merge(array_values($attributes), array_values($values));
+        return $this->create();
+    }
+    
 }

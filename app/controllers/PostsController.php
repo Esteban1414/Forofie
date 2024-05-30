@@ -98,4 +98,5 @@ session_start();
         $rc       = $comments->count('postId')->where([['postId', $data['pid']]])->get();
         echo $rc;
     }
+    
 }
