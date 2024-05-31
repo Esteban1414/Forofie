@@ -10,6 +10,8 @@ use app\controllers\ErrorController as Error;
 use app\controllers\auth\SessionController as Session;
 use app\controllers\auth\RegisterController as Register;
 use app\controllers\UserpostsController as UserPosts;
+use app\controllers\UserController as User;
+
 
 class Router
 {
@@ -40,9 +42,12 @@ class Router
             case 'UserpostsController':
                 $controller = new UserPosts();
                 break;
+            case 'UserController':
+                $controller = new User();
+                break;
             default:
                 $controller = new Error();
-                $action = 'error404';
+                $action = 'error404';        
         }
         $controller->$action($params);
         return;

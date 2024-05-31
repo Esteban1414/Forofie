@@ -2,8 +2,6 @@
 function setHeader($args)
 {
     $ua = as_object($args->ua);
-    // $ua = as_object([]);
-
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -13,8 +11,8 @@ function setHeader($args)
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
         <link rel="stylesheet" href="/assets/css/app.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">        
-        <title><?= $args->title ?></title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <title><?= htmlspecialchars($args->title) ?></title>
         <style>
             body {
                 color: #888;
@@ -50,20 +48,19 @@ function setHeader($args)
                                 <li class="nav-item">
                                     <a class="nav-link btn btn-link" type="button" aria-current="page" href="/UserPosts">Mis publicaciones</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link btn btn-link" type="button" aria-current="page" href="/User">Mi perfil</a>
+                                </li>
                             <?php } ?>
                         </ul>
                         <ul class="navbar-nav me-5 mb-2 d-flex">
-
                             <?php if (isset($ua->sv) && !$ua->sv) { ?>
-
                                 <li class="nav-item">
                                     <a href="/Session/iniSession" class="nav-link btn btn-link">
-                                        Inicar sesión
+                                        Iniciar sesión
                                     </a>
                                 </li>
-
                             <?php } else { ?>
-
                                 <li class="nav-item dropdown me-5">
                                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                         <?= isset($ua->name) ? $ua->name : '' ?>
@@ -76,7 +73,6 @@ function setHeader($args)
                                     </ul>
                                 </li>
                             <?php } ?>
-
                         </ul>
                     </div>
                 </div>
@@ -84,3 +80,4 @@ function setHeader($args)
         </div>
     <?php
 }
+    ?>

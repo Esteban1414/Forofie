@@ -12,6 +12,7 @@ const app = {
     toggleLike: "/Posts/toggleLike",
     postcomments: "/Posts/getComments",
     savecomment : "/Posts/saveComment",
+    profile: "/User/profile",
 
   },
 

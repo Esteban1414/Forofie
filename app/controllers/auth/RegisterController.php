@@ -3,6 +3,7 @@
 namespace app\controllers\auth;
 
 use app\controllers\Controller;
+use app\controllers\auth\SessionController as session;
 use app\classes\View;
 use app\models\Model;
 use app\models\user;
@@ -18,6 +19,7 @@ class RegisterController extends Controller
     public function index (){
         
         $response = [
+            'ua' => session::sessionValidate() ?? ['sv' => false],
         'title' => 'Registro',
         'code' => 200
         ];

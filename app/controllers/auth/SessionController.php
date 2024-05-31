@@ -25,12 +25,13 @@ class SessionController extends Controller
 
     public function userAuth()
     {
-        $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+        $datos = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
         $user = new user;
-        $stmt = $user->where([["name", $data['name']], ["passwd", $data['passwd']]])
-            ->get();
-        if (count(json_decode($stmt)) > 0) {
-            echo $this->sessionRegister($stmt);
+        $result = $user->where([["name",$datos["name"]],
+        ["passwd",sha1($datos["passwd"])]])->get();
+
+        if(count(json_decode($result)) > 0){
+            echo $this->sessionRegister($result);
         } else {
             self::sessionDestroy();
             echo json_encode(["r" => false]);
@@ -45,6 +46,7 @@ class SessionController extends Controller
         $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
         $_SESSION['id'] = $data[0]->id;
         $_SESSION['name'] = $data[0]->name;
+        $_SESSION['email'] = $data[0]->email;
         $_SESSION['passwd'] = $data[0]->passwd;
         $_SESSION['tipo'] = $data[0]->tipo;
         $_SESSION['activo'] = $data[0]->activo;
@@ -59,11 +61,11 @@ class SessionController extends Controller
         session_start();
         if (isset($_SESSION['sv']) && $_SESSION['sv'] == true) {
             $data = $_SESSION;
-            $stmt = $user->where([["name", $data['name']], ["passwd", $data['passwd']]])
+            $stmt = $user->where([["id", $data['id']]])
                 ->get();
             if (count(json_decode($stmt)) > 0 && $data['IP'] == $_SERVER['REMOTE_ADDR']) {
                 session_write_close();
-                return ['name' => $data['name'], 'sv' => $data['sv'], 'id' => $data['id'], 'tipo' => $data['tipo']];
+                return ['name' => $data['name'], 'sv' => $data['sv'], 'id' => $data['id'], 'tipo' => $data['tipo'], 'name' => $data['name'], 'email' => $data['email']];
             } else {
                 session_write_close();
                 self::sessionDestroy();
@@ -75,19 +77,16 @@ class SessionController extends Controller
         return null;
     }
 
-    private static function sessionDestroy()
-    {
+    private static function sessionDestroy(){
         session_start();
-        $_SESSION = [];
-        $_SESSION['sv'] = false;
+        $_SESSION = ['sv' => false ];            
         session_destroy();
         session_write_close();
         return;
     }
-
     public function logout(){
         $this->sessionDestroy();
         Redirect::to('Home');
         exit();
-    }
+    }       
 }

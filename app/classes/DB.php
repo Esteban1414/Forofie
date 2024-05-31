@@ -185,25 +185,30 @@ class DB
 
     public function updateOrCreate(array $attributes, array $values = [])
     {
-        $where = [];
-        foreach ($attributes as $key => $value) {
-            $where[] = [$key, $value];
-        }
-        $this->where($where);
+        // Aqui creo un array de arrays con las condiciones de búsqueda para el where
+        $conditions = array_map(function($key, $value) {
+            return [$key, $value];
+        }, array_keys($attributes), $attributes);
     
+        $this->where($conditions);
+    
+        // Aqui exists ya contiene los registros que coinciden con las condiciones where
         $exists = json_decode($this->get(), true);
     
-        if (count($exists) > 0) {
-            $sets = [];
-            foreach ($values as $key => $value) {
-                $sets[] = [$key, $value];
-            }
-            return $this->update($sets);
-        }
+        // Si existen registros que coinciden con las condiciones where, entonces actualizo
+        // es un proceso similar al anterior y si exists está vacío, entonces ya creo un nuevo registro
+        if (!empty($exists)) {
+            $updateData = array_map(function($key, $value) {
+                return [$key, $value];
+            }, array_keys($values), $values);
     
-        $this->fillable = array_merge(array_keys($attributes), array_keys($values));
-        $this->values = array_merge(array_values($attributes), array_values($values));
-        return $this->create();
+            return $this->update($updateData);
+        } else {
+            $this->fillable = array_merge(array_keys($attributes), array_keys($values));
+            $this->values = array_merge(array_values($attributes), array_values($values));
+    
+            return $this->create();
+        }
     }
     
 }
